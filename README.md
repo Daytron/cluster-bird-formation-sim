@@ -2,7 +2,7 @@
 
 ## Cluster Bird Formations Simulation ##
 ### Description ###
-A cluster formation simulation Python application using bird flight patterns such as V and circle formations. This is just a demonstration of clustering behaviour for Artificial Intelligence. This is initially created for Codeskulptor (([http://www.codeskulptor.org/](http://www.codeskulptor.org/)) but now uses **SimpleGUICS2Pygame** module.
+A cluster formation simulation Python application using bird flight patterns such as V and circle formations. This is just a demonstration of clustering behaviour for Artificial Intelligence. This is initially created for Codeskulptor ([http://www.codeskulptor.org/](http://www.codeskulptor.org/)) but now uses **SimpleGUICS2Pygame** module.
 
 ### Requirements ###
 - Python 2.7
