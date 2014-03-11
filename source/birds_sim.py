@@ -19,7 +19,7 @@ SPEED_LIMIT = 20
 RADIUS = 120 
 
 v_key = 12
-balls = [] #A list that will hold the balls clas members
+birds = [] #A list that will hold the birds clas members
 formation_circle = False
 formation_v = True
 max_birds = 0
@@ -27,11 +27,11 @@ max_birds = 0
 
 
 ###########################################################    
-class Ball:
-    def __init__(self, ball_pos, radius, ball_velocity, tag, speed_limiter, in_formation):
+class Bird:
+    def __init__(self, bird_pos, radius, bird_velocity, tag, speed_limiter, in_formation):
         self.radius = radius
-        self.ball_pos = ball_pos
-        self.ball_vel = ball_velocity
+        self.bird_pos = bird_pos
+        self.bird_vel = bird_velocity
         self.tag = tag
         self.speed_limiter = speed_limiter
         self.in_formation = in_formation
@@ -42,28 +42,28 @@ class Ball:
         self.new_pos[0] = x
         self.new_pos[1] = y
     
-    def set_ball(self,canvas):
-        #update ball
-        self.ball_pos[0]+=self.ball_vel[0]
-        self.ball_pos[1]+=self.ball_vel[1]        
+    def draw_bird(self,canvas):
+        #update bird
+        self.bird_pos[0]+=self.bird_vel[0]
+        self.bird_pos[1]+=self.bird_vel[1]        
         
-        if self.ball_vel[0] < 0:
-            canvas.draw_image(imageL, (134/2,127/2), (134,127), self.ball_pos, (134/2,127/2))
+        if self.bird_vel[0] < 0:
+            canvas.draw_image(imageL, (134/2,127/2), (134,127), self.bird_pos, (134/2,127/2))
         else:
-            canvas.draw_image(imageR, (134/2,127/2), (134,127), self.ball_pos, (134/2,127/2))
+            canvas.draw_image(imageR, (134/2,127/2), (134,127), self.bird_pos, (134/2,127/2))
      
     def bounce(self):
-        if self.ball_pos[0] > WIDTH-self.radius:
-            self.ball_vel[0]= -self.ball_vel[0]
+        if self.bird_pos[0] > WIDTH-self.radius:
+            self.bird_vel[0]= -self.bird_vel[0]
         
-        if self.ball_pos[1] > HEIGHT-self.radius:
-            self.ball_vel[1]= -self.ball_vel[1]
+        if self.bird_pos[1] > HEIGHT-self.radius:
+            self.bird_vel[1]= -self.bird_vel[1]
         
-        if self.ball_pos[0] < self.radius:
-            self.ball_vel[0]= -self.ball_vel[0]
+        if self.bird_pos[0] < self.radius:
+            self.bird_vel[0]= -self.bird_vel[0]
         
-        if self.ball_pos[1] < self.radius:
-            self.ball_vel[1]= -self.ball_vel[1]
+        if self.bird_pos[1] < self.radius:
+            self.bird_vel[1]= -self.bird_vel[1]
 
 
 def button_cplus():
@@ -86,26 +86,26 @@ def button_vminus():
     v_key -= 1
 
 
-#randomizer for ball spawn intial position    
+#randomizer for bird spawn intial position    
 def spawnPOS():
-    ball_vel = [0,0]
+    bird_vel = [0,0]
     
-    while ball_vel[0] < 2 and ball_vel[0] > -2:
-        ball_vel[0] += random.randrange(-5,5)
+    while bird_vel[0] < 2 and bird_vel[0] > -2:
+        bird_vel[0] += random.randrange(-5,5)
     
-    while ball_vel[1] < 2 and ball_vel[1] > -2:
-        ball_vel[1] += random.randrange(-5,5)
+    while bird_vel[1] < 2 and bird_vel[1] > -2:
+        bird_vel[1] += random.randrange(-5,5)
     
-    return ball_vel
+    return bird_vel
 
 
 #Magic starts here :) Spawn new bird in each click
 def mouseclick(pos):
-    global balls, max_birds
+    global birds, max_birds
     posList = [pos[0],pos[1]] 
     
     if max_birds < 9:
-        balls.append(Ball(posList, 10, spawnPOS(), False, SPEED_LIMIT, False))
+        birds.append(Bird(posList, 10, spawnPOS(), False, SPEED_LIMIT, False))
         max_birds += 1
 
 
@@ -117,13 +117,13 @@ def button_handler_c():
         formation_circle = True    
         formation_v = False
         
-        for h, ball in enumerate(balls):
-            balls[h].tag = False
-            balls[h].speed_limiter = SPEED_LIMIT
+        for h, bird in enumerate(birds):
+            birds[h].tag = False
+            birds[h].speed_limiter = SPEED_LIMIT
             
-            if balls[h].ball_vel[0] == 0:
-                balls[h].ball_vel[0] += random.randrange(2,5) 
-                balls[h].ball_vel[1] += random.randrange(2,5)
+            if birds[h].bird_vel[0] == 0:
+                birds[h].bird_vel[0] += random.randrange(2,5) 
+                birds[h].bird_vel[1] += random.randrange(2,5)
 
 
 #button handler function for V formation                
@@ -134,13 +134,13 @@ def button_handler_v():
         formation_circle = False   
         formation_v = True
         
-        for o, ball in enumerate(balls):
-            balls[o].tag = False
-            balls[o].speed_limiter = SPEED_LIMIT
+        for o, bird in enumerate(birds):
+            birds[o].tag = False
+            birds[o].speed_limiter = SPEED_LIMIT
             
-            if balls[o].ball_vel[0] == 0:
-                balls[o].ball_vel[0] += random.randrange(2,5) 
-                balls[o].ball_vel[1] += random.randrange(2,5) 
+            if birds[o].bird_vel[0] == 0:
+                birds[o].bird_vel[0] += random.randrange(2,5) 
+                birds[o].bird_vel[1] += random.randrange(2,5) 
                 
 
 #drawing handler function. Automatically runs itself 60 times per second (to produce animation like movement)
@@ -161,22 +161,22 @@ def draw_handler(canvas):
     canvas.draw_text("By: Ryan Gilera", (91,80),12,"Black","monospace")
     
     #draw birds
-    for i, ball in enumerate(balls):
-        balls[i].set_ball(canvas)
-        balls[i].bounce()
+    for i, bird in enumerate(birds):
+        birds[i].draw_bird(canvas)
+        birds[i].bounce()
         
-    alignBall()
+    alignbird()
     
     
 #the main part of the program. It updates birds positions and velocity
-def alignBall():
+def alignbird():
     key = 0
     
-    for j, bola in enumerate(balls):
+    for j, bola in enumerate(birds):
         if j > 0:
             distance = math.sqrt(
-                                 math.pow((balls[j].ball_pos[0] - balls[0].ball_pos[0]),2) +
-                                 math.pow((balls[j].ball_pos[1] - balls[0].ball_pos[1]),2))
+                                 math.pow((birds[j].bird_pos[0] - birds[0].bird_pos[0]),2) +
+                                 math.pow((birds[j].bird_pos[1] - birds[0].bird_pos[1]),2))
 
             
             #updates birds positions for formation V
@@ -184,131 +184,131 @@ def alignBall():
                 if ((j % 2) == 1):
                     key += v_key
                     birdLeft(key)
-                    balls[j].update_new_pos(new_pos[0], new_pos[1])
+                    birds[j].update_new_pos(new_pos[0], new_pos[1])
                 else:
                     birdRight(key)
-                    balls[j].update_new_pos(new_pos[0], new_pos[1])
+                    birds[j].update_new_pos(new_pos[0], new_pos[1])
                 
             #updates birds positions for formation V
             if formation_circle == True and formation_v ==  False:
                 if j == 1:
                     updateCTopPos()
-                    balls[j].update_new_pos(new_pos[0], new_pos[1])
+                    birds[j].update_new_pos(new_pos[0], new_pos[1])
                 if j == 2:
                     updateCBottomPos()
-                    balls[j].update_new_pos(new_pos[0], new_pos[1])
+                    birds[j].update_new_pos(new_pos[0], new_pos[1])
                 if j == 3:
                     updateCLeftPos()
-                    balls[j].update_new_pos(new_pos[0], new_pos[1])
+                    birds[j].update_new_pos(new_pos[0], new_pos[1])
                 if j == 4:
                     updateCRightPos()
-                    balls[j].update_new_pos(new_pos[0], new_pos[1])
+                    birds[j].update_new_pos(new_pos[0], new_pos[1])
                 if j == 5:
                     updateCTopRight()
-                    balls[j].update_new_pos(new_pos[0], new_pos[1])
+                    birds[j].update_new_pos(new_pos[0], new_pos[1])
                 if j == 6:
                     updateCTopLeft()
-                    balls[j].update_new_pos(new_pos[0], new_pos[1])
+                    birds[j].update_new_pos(new_pos[0], new_pos[1])
                 if j == 7:
                     updateCBottomRight()
-                    balls[j].update_new_pos(new_pos[0], new_pos[1])
+                    birds[j].update_new_pos(new_pos[0], new_pos[1])
                 if j == 8:
                     updateCBottomLeft()
-                    balls[j].update_new_pos(new_pos[0], new_pos[1])    
+                    birds[j].update_new_pos(new_pos[0], new_pos[1])    
                     
-            new_pos_distance = math.sqrt(math.pow((balls[j].ball_pos[0] - new_pos[0]),2) +
-              math.pow((balls[j].ball_pos[1] - new_pos[1]),2))                                                   
+            new_pos_distance = math.sqrt(math.pow((birds[j].bird_pos[0] - new_pos[0]),2) +
+              math.pow((birds[j].bird_pos[1] - new_pos[1]),2))                                                   
 
             #If birds are in position, maintain velocity so that it will be fix on that new position
-            if balls[j].tag == True:
-                balls[j].in_formation = True
-                balls[j].ball_vel[0] = (balls[j].new_pos[0] - balls[j].ball_pos[0]) 
-                balls[j].ball_vel[1] = (balls[j].new_pos[1] - balls[j].ball_pos[1])         
+            if birds[j].tag == True:
+                birds[j].in_formation = True
+                birds[j].bird_vel[0] = (birds[j].new_pos[0] - birds[j].bird_pos[0]) 
+                birds[j].bird_vel[1] = (birds[j].new_pos[1] - birds[j].bird_pos[1])         
                 
             else:        
                 #Else sets the birds into accelaration mode
                 if (distance <= (math.hypot(ref_vel[0],ref_vel[1]) + 50)):
-                    balls[j].fixed_tag = True
+                    birds[j].fixed_tag = True
                 
             #Accelerates the birds so that they can move to the new_pos
             #This is always true if the birds are still far from the new_pos
-            if balls[j].fixed_tag == True or ((balls[j].in_formation == True) and balls[j].tag == False):
+            if birds[j].fixed_tag == True or ((birds[j].in_formation == True) and birds[j].tag == False):
                 if new_pos_distance > 0:
-                    balls[j].ball_vel[0] = (balls[j].new_pos[0] - balls[j].ball_pos[0])/balls[j].speed_limiter 
-                    balls[j].ball_vel[1] = (balls[j].new_pos[1] - balls[j].ball_pos[1])/balls[j].speed_limiter
+                    birds[j].bird_vel[0] = (birds[j].new_pos[0] - birds[j].bird_pos[0])/birds[j].speed_limiter 
+                    birds[j].bird_vel[1] = (birds[j].new_pos[1] - birds[j].bird_pos[1])/birds[j].speed_limiter
     
                     #This updates and increases the acceleration if necessary to reach new_pos
-                    if (math.hypot(balls[j].ball_vel[0],balls[j].ball_vel[1]) <= math.hypot(balls[0].ball_vel[0],balls[0].ball_vel[1]) and	
-                        balls[j].speed_limiter > 1):
-                        balls[j].speed_limiter -= 1
+                    if (math.hypot(birds[j].bird_vel[0],birds[j].bird_vel[1]) <= math.hypot(birds[0].bird_vel[0],birds[0].bird_vel[1]) and	
+                        birds[j].speed_limiter > 1):
+                        birds[j].speed_limiter -= 1
                     else:
                         #if all seems in seems in position, tag it to True
-                        balls[j].tag = True   
+                        birds[j].tag = True   
                 else: 
                     #if all seems in seems in position, tag it to True
-                    balls[j].tag = True
-                    balls[j].fixed_tag = False   
+                    birds[j].tag = True
+                    birds[j].fixed_tag = False   
                 
                 
 def birdLeft(multiplier):
     global ref_vel, pre_pos, new_pos, formation_pos, v_mid_length
-    ref_vel = [balls[0].ball_vel[0] * multiplier, balls[0].ball_vel[1] * multiplier]
-    pre_pos = [balls[0].ball_pos[0] - ref_vel[0], balls[0].ball_pos[1] - ref_vel[1]]
+    ref_vel = [birds[0].bird_vel[0] * multiplier, birds[0].bird_vel[1] * multiplier]
+    pre_pos = [birds[0].bird_pos[0] - ref_vel[0], birds[0].bird_pos[1] - ref_vel[1]]
     new_pos = [pre_pos[0] + ref_vel[1], pre_pos[1] - ref_vel[0]]
     
 
 def birdRight(multiplier):
     global ref_vel, pre_pos, new_pos, v_mid_length
-    ref_vel = [balls[0].ball_vel[0] * multiplier, balls[0].ball_vel[1] * multiplier]
-    pre_pos = [balls[0].ball_pos[0] - ref_vel[0], balls[0].ball_pos[1] - ref_vel[1]]
+    ref_vel = [birds[0].bird_vel[0] * multiplier, birds[0].bird_vel[1] * multiplier]
+    pre_pos = [birds[0].bird_pos[0] - ref_vel[0], birds[0].bird_pos[1] - ref_vel[1]]
     new_pos = [pre_pos[0] - ref_vel[1], pre_pos[1] + ref_vel[0]]
 
 
 def updateCTopPos():
     global new_pos
-    new_pos = [balls[0].ball_pos[0], balls[0].ball_pos[1] - RADIUS ]   
+    new_pos = [birds[0].bird_pos[0], birds[0].bird_pos[1] - RADIUS ]   
     
 
 def updateCBottomPos():
     global new_pos
-    new_pos = [balls[0].ball_pos[0], balls[0].ball_pos[1] + RADIUS ]    
+    new_pos = [birds[0].bird_pos[0], birds[0].bird_pos[1] + RADIUS ]    
    
 
 def updateCLeftPos():
     global new_pos
-    new_pos = [balls[0].ball_pos[0] - RADIUS, balls[0].ball_pos[1]]
+    new_pos = [birds[0].bird_pos[0] - RADIUS, birds[0].bird_pos[1]]
 
 
 def updateCRightPos():
     global new_pos
-    new_pos = [balls[0].ball_pos[0] + RADIUS, balls[0].ball_pos[1]]
+    new_pos = [birds[0].bird_pos[0] + RADIUS, birds[0].bird_pos[1]]
 
 
 def updateCTopRight():
     global new_pos
-    x = (balls[0].ball_pos[0] + (RADIUS * (math.cos(math.radians(45)))))
-    y = (balls[0].ball_pos[1] - (RADIUS * (math.sin(math.radians(45)))))
+    x = (birds[0].bird_pos[0] + (RADIUS * (math.cos(math.radians(45)))))
+    y = (birds[0].bird_pos[1] - (RADIUS * (math.sin(math.radians(45)))))
     new_pos = [x,y]    
 
 
 def updateCTopLeft():
     global new_pos
-    x = (balls[0].ball_pos[0] - (RADIUS * (math.cos(math.radians(45)))))
-    y = (balls[0].ball_pos[1] - (RADIUS * (math.sin(math.radians(45)))))
+    x = (birds[0].bird_pos[0] - (RADIUS * (math.cos(math.radians(45)))))
+    y = (birds[0].bird_pos[1] - (RADIUS * (math.sin(math.radians(45)))))
     new_pos = [x,y]     
     
 
 def updateCBottomRight():
     global new_pos
-    x = (balls[0].ball_pos[0] + (RADIUS * (math.cos(math.radians(45)))))
-    y = (balls[0].ball_pos[1] + (RADIUS * (math.sin(math.radians(45)))))
+    x = (birds[0].bird_pos[0] + (RADIUS * (math.cos(math.radians(45)))))
+    y = (birds[0].bird_pos[1] + (RADIUS * (math.sin(math.radians(45)))))
     new_pos = [x,y]    
     
     
 def updateCBottomLeft():
     global new_pos
-    x = (balls[0].ball_pos[0] - (RADIUS * (math.cos(math.radians(45)))))
-    y = (balls[0].ball_pos[1] + (RADIUS * (math.sin(math.radians(45)))))
+    x = (birds[0].bird_pos[0] - (RADIUS * (math.cos(math.radians(45)))))
+    y = (birds[0].bird_pos[1] + (RADIUS * (math.sin(math.radians(45)))))
     new_pos = [x,y]
 
 
