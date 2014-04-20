@@ -4,6 +4,8 @@
 ### Description ###
 A Python application for simulating cluster formation of bird flight patterns such as V and circle formations. This is just a demonstration of clustering behaviour in the field Artificial Intelligence. This is initially created for Codeskulptor ([http://www.codeskulptor.org/](http://www.codeskulptor.org/)) but now uses **SimpleGUICS2Pygame** module.
 
+![ScreenShot](https://raw.githubusercontent.com/Daytron/cluster-bird-formation-sim/master/screenshots/screenshot1.png)
+
 ### Requirements ###
 - Python 2.7
 - Pygame
